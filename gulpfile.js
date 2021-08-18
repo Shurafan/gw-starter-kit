@@ -21,8 +21,7 @@ const twig = require('gulp-twig');
 const htmlbeautify = require('gulp-html-beautify');
 const sourcemaps = require('gulp-sourcemaps');
 const gulpif = require('gulp-if');
-const webpack = require('webpack-stream');
-const strip = require('gulp-strip-comments');
+const gulpEsbuild = require('gulp-esbuild');
 const version = require('gulp-version-number');
 const notifier = require('node-notifier');
 const rsync = require('gulp-rsync');
@@ -35,7 +34,6 @@ const production = !developer;
 const isMode = developer ? 'dev' : 'prod';
 const dataMode = require(`./src/data/${isMode}.json`);
 const dataSite = require(`./src/data/site.json`);
-const webpackConfig = require('./webpack.config.js');
 const versionConfig = {
 	'value': '%DT%',
 	'append': {
@@ -150,9 +148,19 @@ function styles() {
 
 // js
 function scripts() {
-	return webpack(webpackConfig)
-		.pipe(gulpif(production, strip()))
-		.pipe(gulp.dest(paths.dist.js));
+	return gulp.src(paths.src.script)
+		.pipe(gulpEsbuild({
+			outfile: "main.min.js",
+			bundle: true,
+			sourcemap: developer,
+			minify: production,
+			format: 'iife',
+			platform: 'node',
+			logLevel: 'info',
+			plugins: [
+			],
+		}))
+		.pipe(gulp.dest(paths.dist.js))
 }
 
 // fonts
