@@ -19,6 +19,7 @@ module.exports = {
 	root: path.join(dirRoot, dirDist),
 	clean: path.join(dirRoot, dirDist, '*'),
 	dist: {
+		wpStream: path.join(dirRoot, dirDist, dirAssets),
 		static: path.join(dirRoot, dirDist),
 		html: path.join(dirRoot, dirDist),
 		js: path.join(dirRoot, dirDist, dirAssets, 'js'),
